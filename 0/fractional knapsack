@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Item {
+    int profit;
+    int weight;
+};
+
+// Compare function for sorting items by profit-to-weight ratio
+int compare(const void* a, const void* b) {
+    double ratioA = ((struct Item*)a)->profit / (double)((struct Item*)a)->weight;
+    double ratioB = ((struct Item*)b)->profit / (double)((struct Item*)b)->weight;
+    return (ratioB > ratioA) - (ratioB < ratioA);
+}
+
+double fractionalKnapsack(int W, struct Item arr[], int n) {
+    qsort(arr, n, sizeof(struct Item), compare);
+
+    double totalProfit = 0.0;
+    int remainingCapacity = W;
+
+    for (int i = 0; i < n; ++i) {
+        if (arr[i].weight <= remainingCapacity) {
+            totalProfit += arr[i].profit;
+            remainingCapacity -= arr[i].weight;
+        } else {
+            totalProfit += (double)arr[i].profit * remainingCapacity / arr[i].weight;
+            break;
+        }
+    }
+
+    return totalProfit;
+}
+
+int main() {
+    struct Item items[] = {{60, 10}, {100, 20}, {120, 30}};
+    int n = sizeof(items) / sizeof(items[0]);
+    int knapsackCapacity = 50;
+
+    double result = fractionalKnapsack(knapsackCapacity, items, n);
+    printf("Total Profit: %.2f\n", result);
+
+    return 0;
+}
