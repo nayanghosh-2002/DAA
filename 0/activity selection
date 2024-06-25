@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure to represent an activity
+struct Activity {
+    int start, end;
+};
+
+// Function to compare activities based on finish time
+int compare(const void* a, const void* b) {
+    return ((struct Activity*)a)->end - ((struct Activity*)b)->end;
+}
+
+// Function to solve the activity selection problem
+void selectActivities(struct Activity activities[], int n) {
+    qsort(activities, n, sizeof(struct Activity), compare);
+
+    printf("Selected Activities are:\n");
+    int i = 0; // First activity is always selected
+    printf("Activity: %d, Start: %d, End: %d\n", i, activities[i].start, activities[i].end);
+
+    for (int j = 1; j < n; j++) {
+        if (activities[j].start >= activities[i].end) {
+            // When start time is >= end time, print the activity
+            i = j;
+            printf("Activity: %d, Start: %d, End: %d\n", i, activities[i].start, activities[i].end);
+        }
+    }
+}
+
+int main() {
+    struct Activity activities[] = {
+        {1, 2}, {3, 4}, {0, 6}, {5, 7}, {8, 9}, {5, 9}
+    };
+    int n = sizeof(activities) / sizeof(activities[0]);
+
+    selectActivities(activities, n);
+
+    return 0;
+}
